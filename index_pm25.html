@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PM2.5 年平均値 濃度分布（令和２年）</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+    <div id="infoDiv">東京都一般環境大気測定局（一般局）測定結果2020（令和２）年度より<br/><br/>
+  	武蔵野台地の底で呼吸器系疾患は発生しやすいです。要の場所に薬局が密集していることが分かります。<br/>
+    </div>
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiZnV0dXJlLWZvcmVjYXN0LWFpIiwiYSI6ImNrdGwzYWRxMzFybnoycm1wZ3oyZXV0Y2wifQ.34YElQZ1g_u1VNlhAgWcfQ';
+    const map = new mapboxgl.Map({
+        container: 'map',
+	pitch: 85,
+	bearing: -45,
+        style: 'mapbox://styles/mapbox-map-design/ckhqrf2tz0dt119ny6azh975y',
+        center:  [139.751452,35.670057],
+        zoom: 16
+    });
+
+    map.on('load', () => {
+        map.addSource('national-park', {
+            'type': 'geojson',
+            'data': {
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Polygon',
+                            'coordinates': [
+                                [
+					[139.777948 ,35.630199],
+					[139.767622 ,35.693275],
+					[139.732077 ,35.632734],
+					[139.752518 ,35.734145],
+					[139.750288 ,35.598844],
+					[139.742565 ,35.557913],
+					[139.699276 ,35.660535],
+					[139.791324 ,35.732741],
+					[139.706302 ,35.752703],
+					[139.663936 ,35.767028],
+					[139.778994 ,35.78154],
+					[139.822367 ,35.760661],
+					[139.861251 ,35.794517],
+					[139.886188 ,35.715859],
+					[139.888519 ,35.692174],
+					[139.877194 ,35.645572],
+					[139.4761 ,35.670362],
+					[139.519548 ,35.779898],
+					[139.533353 ,35.731859],
+					[139.563361 ,35.750777]
+                                ]
+                            ]
+                        }
+                    },
+		//基幹病院がある 139.751452,35.670057　虎ノ門病院
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [139.751452,35.670057]
+                        }
+                    },
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [139.731176,35.632912]
+                        }
+                    },
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [139.7527,35.664181]
+                        }
+                    },
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [139.736203,35.677282]
+                        }
+                    },
+		//基幹病院がない
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [139.748367,35.644924]
+                        }
+                    },
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [139.745332,35.648706]
+                        }
+                    },
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [139.756942,35.667648]
+                        }
+                    }
+                ]
+            }
+        });
+
+        map.addLayer({
+            'id': 'park-boundary',
+            'type': 'fill',
+            'source': 'national-park',
+            'paint': {
+                'fill-color': '#888888',
+                'fill-opacity': 0.4
+            },
+            'filter': ['==', '$type', 'Polygon']
+        });
+
+        map.addLayer({
+            'id': 'park-volcanoes',
+            'type': 'circle',
+            'source': 'national-park',
+            'paint': {
+                'circle-radius': 6,
+                'circle-color': '#B42222'
+            },
+            'filter': ['==', '$type', 'Point']
+        });
+	map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+ 
+	// add a sky layer that will show when the map is highly pitched
+	map.addLayer({
+		'id': 'sky',
+		'type': 'sky',
+		'paint': {
+		'sky-type': 'atmosphere',
+		'sky-atmosphere-sun': [0.0, 0.0],
+		'sky-atmosphere-sun-intensity': 15
+	}
+	});
+    });
+</script>
+
+</body>
+</html>
